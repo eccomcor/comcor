@@ -18,6 +18,9 @@ public class Correlation {
 	private double flatUp;
 	private double flatDown;
 	private double flatFlat;
+	private double positiveEffectSize;
+	private double negativeEffectSize;
+	private double flatEffectSize;
 	
 	private String leadingStockPath = "errorInConstructorFollowing";
 	private String trailingStockPath = "errorInConstructorTrailing";
@@ -80,7 +83,7 @@ public class Correlation {
 		
 		double t, l = 0.0;
 		
-		int limit = leadingStocks.size();
+		int limit = trailingStocks.size();
 		
 		//tally keepers for maintaining averages of correlation data
 		double upUpFrequency = 0;
@@ -98,7 +101,7 @@ public class Correlation {
 		double negativeEffectFrequency = 0;
 		double flatEffectFrequency = 0;
 		
-		for(int i = 1; i < limit; i++){
+		for(int i = 1; i < limit; i++){	
 			
 			Stock trailingStock = trailingStocks.get(i-1);
 			Stock leadingStock = leadingStocks.get(i);
@@ -214,6 +217,11 @@ public class Correlation {
 				}
 			
 			}
+		//after all the effects have been summed, the effect size ratio is found
+		
+		this.positiveEffectSize = positiveEffectFrequency/limit;
+		this.negativeEffectSize = negativeEffectFrequency/limit;
+		this.flatEffectSize = flatEffectFrequency/limit;
 			
 		}
 	}
