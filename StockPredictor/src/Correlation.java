@@ -224,5 +224,22 @@ public class Correlation {
 		this.flatEffectSize = flatEffectFrequency/limit;
 			
 		}
+	
+	public double getCorrelation(String c){
+		if(c.equals("upUp"))return upUp;
+		else if(c.equals("upDown"))return upDown;
+		else if (c.equals("downUp"))return downUp;
+		else if(c.equals("downDown"))return downDown;
+		else if(c.equals("upFlat"))return upFlat;
+		else if(c.equals("downFlat"))return downFlat;
+		else if(c.equals("flatUp"))return flatUp;
+		else if(c.equals("flatDown"))return flatDown;
+		else if(c.equals("flatFlat"))return flatFlat;
+		else{
+			System.out.println("error getting correlation cofficient");
+		}
+		return -1.0;
+		
+	}
 	}
 
