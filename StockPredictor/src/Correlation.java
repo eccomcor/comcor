@@ -17,7 +17,7 @@ public class Correlation {
 	private double downFlat;
 	private double flatUp;
 	private double flatDown;
-	private double FlatFlat;
+	private double flatFlat;
 	
 	private String leadingStockPath = "errorInConstructorFollowing";
 	private String trailingStockPath = "errorInConstructorTrailing";
@@ -94,8 +94,9 @@ public class Correlation {
 		double flatFlatFrequency = 0;
 		
 		//for effect size calculations
-		double directEffectFrequency = 0;
-		double inverseEffectFrequency = 0;
+		double positiveEffectFrequency = 0;
+		double negativeEffectFrequency = 0;
+		double flatEffectFrequency = 0;
 		
 		for(int i = 1; i < limit; i++){
 			
@@ -108,7 +109,7 @@ public class Correlation {
 			if((l > 0) && (t > 0)){
 				
 				upUpFrequency++;
-				directEffectFrequency++;
+				positiveEffectFrequency++;
 				
 				//correlation is done by trailing change divided by leading change
 			
@@ -123,14 +124,97 @@ public class Correlation {
 			else if((l > 0) && (t < 0)){
 				//basically the same process with different inputs 
 				upDownFrequency++;
-				inverseEffectFrequency++;
+				negativeEffectFrequency++;
 				
 				double temp = Math.abs(t/l);
 				
 				upDown = upDown*upDownFrequency - 1;
+				upDown += temp;
+				upDown /= upDownFrequency;
+			}
+			else if((l < 0) && (t < 0)){
+					//basically the same process with different inputs 
+					downDownFrequency++;
+					negativeEffectFrequency++;
+					
+					double temp = Math.abs(t/l);
+					
+					downDown = downDown*downDownFrequency - 1;
+					downDown += temp;
+					downDown /= downDownFrequency;
+			}
+			else if((l < 0) && (t > 0)){
+				//basically the same process with different inputs 
+				downUpFrequency++;
+				positiveEffectFrequency++;
 				
+				double temp = Math.abs(t/l);
+				
+				downUp = downUp*downUpFrequency - 1;
+				downUp += temp;
+				downUp /= downUpFrequency;
+		}	
+			else if((l > 0) && (t == 0)){
+				//basically the same process with different inputs 
+				upFlatFrequency++;
+				flatEffectFrequency++;
+				
+				
+				upFlat = upFlat*upFlatFrequency - 1;
+				upFlat += l;
+				upFlat /= upFlatFrequency;
+		}
+			else if((l < 0) && (t == 0)){
+				//basically the same process with different inputs 
+				downFlatFrequency++;
+				flatEffectFrequency++;
+				
+				double temp = Math.abs(l);
+				
+				downFlat = downFlat*downFlatFrequency - 1;
+				downFlat += temp;
+				downFlat /= downFlatFrequency;
+		}
+			else if((l == 0) && (t > 0)){
+				//basically the same process with different inputs 
+				flatUpFrequency++;
+				positiveEffectFrequency++;
+				
+		
+				
+				flatUp = flatUp*flatUpFrequency - 1;
+				flatUp += t;
+				flatUp /= flatUpFrequency;
+		}
+			else if((l == 0) && (t < 0)){
+				//basically the same process with different inputs 
+				flatDownFrequency++;
+				negativeEffectFrequency++;
+				
+				double temp = Math.abs(t);
+				
+				flatDown = flatDown*flatDownFrequency - 1;
+				flatDown += temp;
+				flatDown /= flatDownFrequency;
+		}
+			else if((l == 0) && (t == 0)){
+				//basically the same process with different inputs 
+				flatFlatFrequency++;
+				flatEffectFrequency++;
+				
+				double temp = Math.abs(t/l);
+				
+				flatFlat = flatFlat*flatFlatFrequency - 1;
+				flatFlat += temp;
+				flatFlat /= flatFlatFrequency;
+		}
+			else
+				{
+				System.out.println("Error calculating correlations");
+				}
+			
 			}
 			
 		}
 	}
-}
+
