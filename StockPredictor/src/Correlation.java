@@ -236,10 +236,19 @@ public class Correlation {
 		else if(c.equals("flatDown"))return flatDown;
 		else if(c.equals("flatFlat"))return flatFlat;
 		else{
-			System.out.println("error getting correlation cofficient");
+			System.out.println("error in correlation cofficient parameter naming");
 		}
 		return -1.0;
 		
+	}
+	public double getEffectSize(String e){
+		if(e.equals("positive"))return positiveEffectSize;
+		else if(e.equals("negative"))return negativeEffectSize;
+		else if(e.equals("flat"))return flatEffectSize;
+		else {
+			System.out.println("error in effect size parameter naming");
+		}
+		return -1.0;
 	}
 	}
 
