@@ -9,21 +9,12 @@ import java.util.ArrayList;
 
 public class Correlation {
 	
-	private double upUp;
-	private double upDown;
-	private double upFlat;
-	private double downUp;
-	private double downDown;
-	private double downFlat;
-	private double flatUp;
-	private double flatDown;
-	private double flatFlat;
-	private double positiveEffectSize;
-	private double negativeEffectSize;
-	private double flatEffectSize;
+
+	// r is the correlation coefficient
+	private double r;
 	
-	private String leadingStockPath = "errorInConstructorFollowing";
-	private String trailingStockPath = "errorInConstructorTrailing";
+	private String leadingStockPath = "errorInConstructor_LeadingPathName";
+	private String trailingStockPath = "errorInConstructor_TrailingPathName";
 	
 	//the correlation name is formatted like "FollowStockTicker_LeadStockTicker"
 	private String correlationName = "errorInNamingLeadFollowTickers";
@@ -38,7 +29,7 @@ public class Correlation {
 
 	@SuppressWarnings("resource")
 	
-	public ArrayList<Stock> initStockArray(String stockDataPath){
+public ArrayList<Stock> initStockArray(String stockDataPath){
 		
 		ArrayList<Stock> stocks = new ArrayList<Stock>();
 		
@@ -63,7 +54,8 @@ public class Correlation {
 		
 		String[] values = line.split(",");
 		if(!values[0].equals("Date")){
-		
+			//here all the days of stocks are initialized. values[0] is the date, values[1] is the open, and values[4] is the close
+			//volume, daily high, and daily low are also available, and could easily be factored into the logic below. the stock constructor would need to be changed too. 
 			Stock stock = new Stock(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[4]));
 			stocks.add(stock);
 		
@@ -72,7 +64,18 @@ public class Correlation {
 		
 	}
 	
-	public void determineCorrelation(){
+	public double getMean(ArrayList<Stock> list){
+		double mean = 0.0;
+		double temp = 0.0;
+		for(int i = 0; i < list.size(); i++){
+			temp += list.get(i).getChange();
+		}
+		mean = temp/list.size();
+		return mean;
+	}
+	
+	
+public double getR(){
 		
 		ArrayList<Stock> leadingStocks = initStockArray(leadingStockPath);
 		ArrayList<Stock> trailingStocks = initStockArray(trailingStockPath);
@@ -80,175 +83,35 @@ public class Correlation {
 		//t And l hold the day to day changes being compared
 		//further variables might hold arrays of varying size and/or complexity
 		//economic factors like mortgage rate changes, Fed action, and the CPI might be of interest as well 
-		
-		double t, l = 0.0;
-		
-		int limit = trailingStocks.size();
-		
-		//tally keepers for maintaining averages of correlation data
-		double upUpFrequency = 0;
-		double upDownFrequency = 0;
-		double downUpFrequency = 0;
-		double downDownFrequency = 0;
-		double upFlatFrequency = 0;
-		double downFlatFrequency = 0;
-		double flatUpFrequency = 0;
-		double flatDownFrequency = 0;
-		double flatFlatFrequency = 0;
-		
-		//for effect size calculations
-		double positiveEffectFrequency = 0;
-		double negativeEffectFrequency = 0;
-		double flatEffectFrequency = 0;
-		
-		for(int i = 1; i < limit; i++){	
-			
-			Stock trailingStock = trailingStocks.get(i-1);
-			Stock leadingStock = leadingStocks.get(i);
-			t = trailingStock.getChange();
-			l = leadingStock.getChange();
-			
-			//correlation coefficient is being calculated given some relationship between leading and trailing
-			if((l > 0) && (t > 0)){
-				
-				upUpFrequency++;
-				positiveEffectFrequency++;
-				
-				//correlation is done by trailing change divided by leading change
-			
-				double temp = Math.abs(t / l);
-				
-				upUp = upUp*upUpFrequency-1;
-				//add the new one into the sum total
-				upUp += temp;
-				//now average by dividing by the new frequency
-				upUp /= upUpFrequency;
-				}
-			else if((l > 0) && (t < 0)){
-				//basically the same process with different inputs 
-				upDownFrequency++;
-				negativeEffectFrequency++;
-				
-				double temp = Math.abs(t/l);
-				
-				upDown = upDown*upDownFrequency - 1;
-				upDown += temp;
-				upDown /= upDownFrequency;
-			}
-			else if((l < 0) && (t < 0)){
-					//basically the same process with different inputs 
-					downDownFrequency++;
-					negativeEffectFrequency++;
-					
-					double temp = Math.abs(t/l);
-					
-					downDown = downDown*downDownFrequency - 1;
-					downDown += temp;
-					downDown /= downDownFrequency;
-			}
-			else if((l < 0) && (t > 0)){
-				//basically the same process with different inputs 
-				downUpFrequency++;
-				positiveEffectFrequency++;
-				
-				double temp = Math.abs(t/l);
-				
-				downUp = downUp*downUpFrequency - 1;
-				downUp += temp;
-				downUp /= downUpFrequency;
-		}	
-			else if((l > 0) && (t == 0)){
-				//basically the same process with different inputs 
-				upFlatFrequency++;
-				flatEffectFrequency++;
-				
-				
-				upFlat = upFlat*upFlatFrequency - 1;
-				upFlat += l;
-				upFlat /= upFlatFrequency;
+		double leadMean = getMean(leadingStocks);
+		double trailMean = getMean(trailingStocks);
+		double temp = 0.0;
+		double leadSum = 0.0;
+		for(int i = 0; i < leadingStocks.size(); i++){
+			temp = leadingStocks.get(i).getChange() - leadMean;
+			temp = temp*temp;
+			leadSum += temp;
 		}
-			else if((l < 0) && (t == 0)){
-				//basically the same process with different inputs 
-				downFlatFrequency++;
-				flatEffectFrequency++;
-				
-				double temp = Math.abs(l);
-				
-				downFlat = downFlat*downFlatFrequency - 1;
-				downFlat += temp;
-				downFlat /= downFlatFrequency;
-		}
-			else if((l == 0) && (t > 0)){
-				//basically the same process with different inputs 
-				flatUpFrequency++;
-				positiveEffectFrequency++;
-				
 		
-				
-				flatUp = flatUp*flatUpFrequency - 1;
-				flatUp += t;
-				flatUp /= flatUpFrequency;
+		temp = 0.0;
+		double trailSum = 0.0;
+		for(int i = 0; i < trailingStocks.size(); i++){
+			temp = trailingStocks.get(i).getChange() - trailMean;
+			temp = temp*temp;
+			trailSum += temp;
 		}
-			else if((l == 0) && (t < 0)){
-				//basically the same process with different inputs 
-				flatDownFrequency++;
-				negativeEffectFrequency++;
-				
-				double temp = Math.abs(t);
-				
-				flatDown = flatDown*flatDownFrequency - 1;
-				flatDown += temp;
-				flatDown /= flatDownFrequency;
+		double product = 0.0;
+		double productSum = 0.0;
+		for(int i = 1; i < trailingStocks.size(); i++){
+			product = (leadingStocks.get(i).getChange() - leadMean) * (trailingStocks.get(i-1).getChange() - trailMean);
+			productSum += product;
 		}
-			else if((l == 0) && (t == 0)){
-				//basically the same process with different inputs 
-				flatFlatFrequency++;
-				flatEffectFrequency++;
-				
-				double temp = Math.abs(t/l);
-				
-				flatFlat = flatFlat*flatFlatFrequency - 1;
-				flatFlat += temp;
-				flatFlat /= flatFlatFrequency;
-		}
-			else
-				{
-				System.out.println("Error calculating correlations");
-				}
-			
-			}
-		//after all the effects have been summed, the effect size ratio is found
 		
-		this.positiveEffectSize = positiveEffectFrequency/limit;
-		this.negativeEffectSize = negativeEffectFrequency/limit;
-		this.flatEffectSize = flatEffectFrequency/limit;
-			
+		 r = productSum/(Math.sqrt(trailSum*leadSum));
+		return r;
 		}
 	
-	public double getCorrelation(String c){
-		if(c.equals("upUp"))return upUp;
-		else if(c.equals("upDown"))return upDown;
-		else if (c.equals("downUp"))return downUp;
-		else if(c.equals("downDown"))return downDown;
-		else if(c.equals("upFlat"))return upFlat;
-		else if(c.equals("downFlat"))return downFlat;
-		else if(c.equals("flatUp"))return flatUp;
-		else if(c.equals("flatDown"))return flatDown;
-		else if(c.equals("flatFlat"))return flatFlat;
-		else{
-			System.out.println("error in correlation cofficient parameter naming");
-		}
-		return -1.0;
-		
-	}
-	public double getEffectSize(String e){
-		if(e.equals("positive"))return positiveEffectSize;
-		else if(e.equals("negative"))return negativeEffectSize;
-		else if(e.equals("flat"))return flatEffectSize;
-		else {
-			System.out.println("error in effect size parameter naming");
-		}
-		return -1.0;
-	}
+
+	
 	}
 
