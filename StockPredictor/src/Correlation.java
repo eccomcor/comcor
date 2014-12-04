@@ -79,10 +79,8 @@ public double getR(){
 		
 		ArrayList<Stock> leadingStocks = initStockArray(leadingStockPath);
 		ArrayList<Stock> trailingStocks = initStockArray(trailingStockPath);
-		
-		//t And l hold the day to day changes being compared
-		//further variables might hold arrays of varying size and/or complexity
-		//economic factors like mortgage rate changes, Fed action, and the CPI might be of interest as well 
+		//a equals lead change - mean of lead change, b is same for trailing stocks
+		//r = sum of a*b divided by sqrt of (sum of a^2 * sum of  b^2)
 		double leadMean = getMean(leadingStocks);
 		double trailMean = getMean(trailingStocks);
 		double temp = 0.0;
@@ -100,9 +98,12 @@ public double getR(){
 			temp = temp*temp;
 			trailSum += temp;
 		}
+		
+		
 		double product = 0.0;
 		double productSum = 0.0;
 		for(int i = 1; i < trailingStocks.size(); i++){
+			// i-1 in getChange for trailing is to swpace the stock changes by a day. i-1 is one day later than i
 			product = (leadingStocks.get(i).getChange() - leadMean) * (trailingStocks.get(i-1).getChange() - trailMean);
 			productSum += product;
 		}
