@@ -43,4 +43,13 @@ for(int i = 0; i < individual.length; i++){
 	return individual;
 }
 
+public void setN(int n){
+	this.n = n;
+}
+
+public int getN(){
+	return n;
+}
+
+
 }

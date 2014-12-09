@@ -26,6 +26,7 @@ public boolean[] generateIndividual(){
 	boolean[] classifier = new boolean[n+1];
 	Random r = new Random();
 	for(int i = 0; i < classifier.length; i++){
+		//random boolean serves as gene. genes denotes presence of absence in subset
 		classifier[i] = r.nextBoolean();
 		}
 	return classifier;

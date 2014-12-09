@@ -60,7 +60,8 @@ public boolean[] doCrossover(boolean[] parent1, boolean[] parent2){
 		}
 	//endfor1
 	
-	//Fitness has yet to be written, but will eventually return a double signifying calculated fitness value
+	//Fitness has yet to be written 
+	//but will eventually return a double signifying calculated fitness value
 	Fitness fit = new Fitness();
 	int c1Fit = 0;
 	int c2Fit = 0;
