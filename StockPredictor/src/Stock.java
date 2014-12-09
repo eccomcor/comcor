@@ -1,7 +1,7 @@
 
 public class Stock {
 	
-	private String date = "0001-01-01";
+	private String date = "defaultDateMarker";
 	private double open = 0.0;
 	private double close = 0.0;
 	private double change = 0.0;
