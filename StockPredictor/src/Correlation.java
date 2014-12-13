@@ -17,13 +17,20 @@ public class Correlation {
 	
 	private double b;
 	
-	private String leadingStockPath = "errorInConstructor_LeadingPathName";
-	private String trailingStockPath = "errorInConstructor_TrailingPathName";
+
+	
+	private String leadingStockPath = "default_LeadingPathName";
+	private String trailingStockPath = "default_TrailingPathName";
+	private String leadingStockTicker = "defaultLeadingStockTicker";
+	private String trailingStockTicker = "defaultTrailingStockTicker";
 	
 	//the correlation name is formatted like "FollowStockTicker_LeadStockTicker"
-	private String correlationName = "errorInNamingLeadFollowTickers";
+	private String correlationName = "defaultCorrelationName";
 	
 	public Correlation(String leadingStockTicker, String trailingStockTicker){
+		
+		this.leadingStockTicker = leadingStockTicker;
+		this.trailingStockTicker = trailingStockTicker;
 		
 		this.correlationName = trailingStockTicker + "_" + leadingStockTicker;
 		
@@ -31,9 +38,15 @@ public class Correlation {
 		this.trailingStockPath = "src\\" + trailingStockTicker + ".csv";
 	}
 
+	
+
+
+
+	
+	
 	@SuppressWarnings("resource")
 	
-public ArrayList<Stock> initStockArray(String stockDataPath){
+public ArrayList<Stock> initStockArray(String ticker, String stockDataPath){
 		
 		ArrayList<Stock> stocks = new ArrayList<Stock>();
 		
@@ -54,7 +67,7 @@ public ArrayList<Stock> initStockArray(String stockDataPath){
 				if(!values[0].equals("Date")){
 					//here all the days of stocks are initialized. values[0] is the date, values[1] is the open, and values[4] is the close
 					//volume, daily high, and daily low are also available, and could easily be factored into the logic below. the stock constructor would need to be changed too. 
-					Stock stock = new Stock(values[0], Double.parseDouble(values[1]), Double.parseDouble(values[4]));
+					Stock stock = new Stock(ticker, values[0], Double.parseDouble(values[1]), Double.parseDouble(values[4]));
 					stocks.add(stock);
 			}
 			}
@@ -88,8 +101,8 @@ public ArrayList<Stock> initStockArray(String stockDataPath){
 	
 public void initR(){
 		
-		ArrayList<Stock> leadingStocks = initStockArray(leadingStockPath);
-		ArrayList<Stock> trailingStocks = initStockArray(trailingStockPath);
+		ArrayList<Stock> leadingStocks = initStockArray(leadingStockTicker, leadingStockPath);
+		ArrayList<Stock> trailingStocks = initStockArray(trailingStockTicker, trailingStockPath);
 		
 		//a equals lead change - mean of lead change, b is same for trailing stocks
 		//r = sum of a*b divided by sqrt of (sum of a^2 * sum of  b^2)
@@ -133,8 +146,8 @@ public double getR(){
 
 public void initB(){
 	
-	ArrayList<Stock> leadingStocks = initStockArray(leadingStockPath);
-	ArrayList<Stock> trailingStocks = initStockArray(trailingStockPath);
+	ArrayList<Stock> leadingStocks = initStockArray(leadingStockTicker, leadingStockPath);
+	ArrayList<Stock> trailingStocks = initStockArray(trailingStockTicker, trailingStockPath);
 	
 	double product = 0.0;
 	double productSum = 0.0;

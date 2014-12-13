@@ -5,12 +5,14 @@ public class Stock {
 	private double open = 0.0;
 	private double close = 0.0;
 	private double change = 0.0;
+	private String ticker = "defaultTicker";
 	
-	public Stock(String date, double open, double close){
+	public Stock(String ticker, String date, double open, double close){
 		this.date = date;
 		this.open = open;
 		this.close = close;
 		this.change = open-close;
+		this.ticker = ticker;
 	}
 	
 	public void setOpen(double open){
@@ -37,6 +39,12 @@ public class Stock {
 		this.change = change;
 	}
 	
+	public String getTicker(){
+		return ticker;
+	}
 	
+	public void setTicker(String ticker){
+		this.ticker = ticker;
+	}
 
 }

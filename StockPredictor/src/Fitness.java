@@ -20,18 +20,9 @@ public class Fitness {
 	
 public double getFitness(boolean[] individual, String dependentStockTicker){
 	double fitness = 0.0;
+	return fitness;
+}
 	
-	
-			for(int i = 0; i < individual.length-1; i++){
-				if(individual[i] == true){
-					Correlation c = new Correlation(stockIndex[0][i], dependentStockTicker);
-					c.initR();
-					double r = c.getR();
-					fitness += r;
-				}
-			}
-			return fitness;
-			}
 
 
 
